@@ -14,11 +14,19 @@ dotenv.config();
 const port = process.env.SERVERPORT || 3000
 
 const app = express();
+
+// ✅ СНАЧАЛА CORS
+app.use(cors({
+  origin: true
+}));
+
+// потом всё остальное
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// ✅ И ТОЛЬКО ПОТОМ картинки
 const IMAGES_DIR = path.resolve(process.cwd(), "assets", "images");
 app.use("/images", express.static(IMAGES_DIR));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }))
-app.use(cors())
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);

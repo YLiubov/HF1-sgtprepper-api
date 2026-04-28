@@ -3,7 +3,7 @@ import { getRecord, getRecords, getRecordsByCategory } from '../controllers/prod
 
 const routes = Router();
 routes.get('/', getRecords);
-routes.get('/:category', getRecordsByCategory);
+routes.get('/category/:category', getRecordsByCategory);
 routes.get('/:category/:slug', getRecord);
 
 export const productRoutes = routes;

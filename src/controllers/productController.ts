@@ -2,11 +2,10 @@ import { Request, Response } from 'express';
 import { prisma } from '../prisma.js';
 
 export const getRecords = async (req: Request, res: Response) => {
-  const { category } = req.params;
   try {
     const data = await prisma.product.findMany({
       where: {
-        isActive: true
+        isActive: true,
       },
       select: {
         name: true,
@@ -15,22 +14,40 @@ export const getRecords = async (req: Request, res: Response) => {
         teaser: true,
         imageUrl: true,
         stock: true,
-      }
+        createdAt: true,
+
+        category: {
+          select: {
+            title: true,
+            description: true,
+            slug: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
+
     res.json(data);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Failed to fetch products' });
+    res.status(500).json({ error: "Failed to fetch products" });
   }
 };
 
 export const getRecordsByCategory = async (req: Request, res: Response) => {
   const { category } = req.params;
+
   try {
     const data = await prisma.product.findMany({
       where: {
         isActive: true,
-        category: { slug: { equals: category } },
+        category: {
+          slug: {
+            equals: category,
+          },
+        },
       },
       select: {
         name: true,
@@ -39,15 +56,27 @@ export const getRecordsByCategory = async (req: Request, res: Response) => {
         teaser: true,
         imageUrl: true,
         stock: true,
-      }
+        createdAt: true,
+
+        category: {
+          select: {
+            title: true,
+            description: true,
+            slug: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
+
     res.json(data);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Failed to fetch products' });
+    res.status(500).json({ error: "Failed to fetch products" });
   }
 };
-
 
 export const getRecord = async (req: Request, res: Response) => {
   const { slug } = req.params;
